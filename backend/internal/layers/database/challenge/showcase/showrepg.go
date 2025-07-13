@@ -11,10 +11,8 @@ import (
 )
 
 const query = `
-	select ci.id, cc.name, ct.description 
-	from challenge_instances ci 
-		join challenge_templates ct on ci.challenge_template_id = ct.id
-		join challenge_categories cc on ct.challenge_category_id = cc.id
+	select ci.id, ct.category, ct.description, ci.started_at, ci.expires_at
+	from challenge_instances ci join challenge_templates ct on ci.challenge_template_id = ct.id
 `
 
 type pgRepository struct {
@@ -23,7 +21,8 @@ type pgRepository struct {
 
 func (repo *pgRepository) FindByID(ctx context.Context, id int64) (*ShowcaseChallenge, error) {
 	var chgeShow ShowcaseChallenge
-	err := repo.conn.QueryRow(ctx, query+" where ci.id = $1", id).Scan(&chgeShow.InstanceID, &chgeShow.Category, &chgeShow.Description)
+	err := repo.conn.QueryRow(ctx, query+" where ci.id = $1", id).
+		Scan(&chgeShow.InstanceID, &chgeShow.Category, &chgeShow.Description, &chgeShow.StartedAt, &chgeShow.ExpiresAt)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -51,6 +50,8 @@ func (repo *pgRepository) FindAll(ctx context.Context) ([]*ShowcaseChallenge, er
 			&chgeShow.InstanceID,
 			&chgeShow.Category,
 			&chgeShow.Description,
+			&chgeShow.StartedAt,
+			&chgeShow.ExpiresAt,
 		); err != nil {
 			log.Printf("Failed to parse row into challenge showcase: %s", err.Error())
 			return nil, err

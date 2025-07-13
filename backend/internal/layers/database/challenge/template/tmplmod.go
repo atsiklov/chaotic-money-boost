@@ -1,7 +1,10 @@
 package template
 
+import "time"
+
 type ChallengeTemplate struct {
-	ID          int64  `db:"id"`
-	CategoryID  int64  `db:"challenge_category_id"`
-	Description string `db:"description"`
+	ID          int64          `db:"id"`
+	Category    string         `db:"category"`
+	Description string         `db:"description"`
+	Duration    *time.Duration `db:"duration"`
 }

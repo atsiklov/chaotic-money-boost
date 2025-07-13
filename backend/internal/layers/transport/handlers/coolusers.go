@@ -2,7 +2,7 @@ package handlers
 
 import (
 	myerr "backend/internal/errors"
-	user "backend/internal/layers/database/userslove"
+	user "backend/internal/layers/database/coolusers"
 	"errors"
 	"net/http"
 	"strconv"

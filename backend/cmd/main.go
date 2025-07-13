@@ -9,7 +9,7 @@ import (
 	inst "backend/internal/layers/database/challenge/instance"
 	show "backend/internal/layers/database/challenge/showcase"
 	tmpl "backend/internal/layers/database/challenge/template"
-	user "backend/internal/layers/database/userslove"
+	user "backend/internal/layers/database/coolusers"
 	"context"
 	"log"
 	"time"

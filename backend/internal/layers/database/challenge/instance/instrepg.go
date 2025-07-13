@@ -13,13 +13,15 @@ type pgRepository struct {
 
 func (repo *pgRepository) Create(ctx context.Context, chgeInstNew *ChallengeInstance) (*ChallengeInstance, error) {
 	const query = `
-	    insert into challenge_instances (challenge_template_id, status) values ($1, $2)
+	    insert into challenge_instances (challenge_template_id, status, started_at, expires_at) values ($1, $2, $3, $4)
 	    returning id, challenge_template_id, status, created_at, updated_at, started_at, expires_at
 	`
 	var chgeInstSaved ChallengeInstance
 	err := repo.conn.QueryRow(ctx, query,
 		chgeInstNew.TemplateID,
 		chgeInstNew.Status,
+		chgeInstNew.StartedAt,
+		chgeInstNew.ExpiresAt,
 	).Scan(
 		&chgeInstSaved.ID,
 		&chgeInstSaved.TemplateID,

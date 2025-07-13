@@ -3,7 +3,7 @@ package http
 import (
 	asgn "backend/internal/layers/database/challenge/assignmnt"
 	show "backend/internal/layers/database/challenge/showcase"
-	"backend/internal/layers/database/userslove"
+	user "backend/internal/layers/database/coolusers"
 	"backend/internal/layers/transport/handlers"
 
 	"github.com/gin-gonic/gin"

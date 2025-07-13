@@ -14,11 +14,11 @@ type pgRepository struct {
 }
 
 func (r *pgRepository) FindByID(ctx context.Context, id int64) (*ChallengeTemplate, error) {
-	query := `select id, challenge_category_id, description from challenge_templates where id = $1`
+	query := `select id, category, description, duration from challenge_templates where id = $1`
 	row := r.conn.QueryRow(ctx, query, id)
 
 	var chgeTmpl ChallengeTemplate
-	err := row.Scan(&chgeTmpl.ID, &chgeTmpl.CategoryID, &chgeTmpl.Description)
+	err := row.Scan(&chgeTmpl.ID, &chgeTmpl.Category, &chgeTmpl.Description, &chgeTmpl.Duration)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
