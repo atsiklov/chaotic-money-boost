@@ -9,4 +9,6 @@ var (
 	ErrChgeTemplateNotFound = errors.New("challenge template not found")
 
 	ErrChgeShowcaseNotFound = errors.New("challenge showcase not found")
+
+	ErrNoRecordsToUpdate = errors.New("no record to update")
 )

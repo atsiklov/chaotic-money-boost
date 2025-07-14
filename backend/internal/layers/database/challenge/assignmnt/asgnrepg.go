@@ -1,6 +1,7 @@
 package assignment
 
 import (
+	myerr "backend/internal/errors"
 	"context"
 	"log"
 
@@ -24,13 +25,17 @@ func (repo *pgRepository) Create(ctx context.Context, asignNew *Assignment) erro
 
 func (repo *pgRepository) Update(ctx context.Context, asignUpd *Assignment) error {
 	const query = `update challenge_assignments 
-		set status = $1, submission = $2, updated_at = now() 
+		set status = $1, submission = $2, submitted_at = now(), updated_at = now() 
 		where challenge_instance_id = $3 and user_id = $4;
 	`
-	_, err := repo.conn.Exec(ctx, query, asignUpd.Status, asignUpd.Submission, asignUpd.InstID, asignUpd.UserID)
+	cmdTag, err := repo.conn.Exec(ctx, query, asignUpd.Status, asignUpd.Submission, asignUpd.InstID, asignUpd.UserID)
 	if err != nil {
 		log.Printf("Failed to update an assignment: %s", err.Error())
 		return err
+	}
+	if cmdTag.RowsAffected() == 0 {
+		log.Printf("Failed to update: assignment doesn't exist for user id = %d and instance id = %d", asignUpd.UserID, asignUpd.InstID)
+		return myerr.ErrNoRecordsToUpdate
 	}
 	return nil
 }

@@ -4,6 +4,7 @@ import (
 	myerr "backend/internal/errors"
 	enums "backend/internal/layers"
 	assignment "backend/internal/layers/database/challenge/assignmnt"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -57,13 +58,20 @@ func (handler *AssignmentHandler) UpdateAssignment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": myerr.INVALID_REQUEST})
 		return
 	}
+
+	// todo - по факту это не assign, а submit - переделать когда появятся нормальные сабмишны
+	// + не должно быть возможности отправить сабмишн, если не было assign!
 	if err := handler.asgnRepo.Update(c.Request.Context(), &assignment.Assignment{
 		Status:     enums.ASGN_SUBMITTED,
 		UserID:     req.UserId,
 		InstID:     instId,
 		Submission: req.Submission,
 	}); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": myerr.INTERNAL_ERROR})
+		if errors.Is(err, myerr.ErrNoRecordsToUpdate) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": myerr.NOTHING_TO_UPDATE})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": myerr.INTERNAL_ERROR})
+		}
 		return
 	}
 	c.Status(http.StatusOK)

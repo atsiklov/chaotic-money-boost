@@ -8,6 +8,7 @@ import (
 	asgn "backend/internal/layers/database/challenge/assignmnt"
 	inst "backend/internal/layers/database/challenge/instance"
 	show "backend/internal/layers/database/challenge/showcase"
+	sbmn "backend/internal/layers/database/challenge/submission"
 	tmpl "backend/internal/layers/database/challenge/template"
 	user "backend/internal/layers/database/coolusers"
 	"context"
@@ -33,10 +34,11 @@ func main() {
 	instRepo := inst.NewPgRepo(dbConn)
 	showRepo := show.NewPgRepo(dbConn)
 	asgnRepo := asgn.NewPgRepo(dbConn)
+	sbmnRepo := sbmn.NewPgRepo(dbConn)
 
 	go func() {
 		time.Sleep(5 * time.Second)
-		chgeScheduler := scheduler.NewChgeScheduler(tmplRepo, instRepo)
+		chgeScheduler := scheduler.NewChgeScheduler(tmplRepo, instRepo, sbmnRepo)
 		chgeScheduler.Start(ctx)
 	}()
 
